@@ -1,0 +1,16 @@
+base_url = "https://www.divijesh.com"
+title = "Divijesh"
+description = "Personal blog"
+compile_sass = true
+build_search_index = false
+
+theme = "oceanic-zen"
+
+[markdown]
+highlight_code = true
+highlight_theme = "visual-studio-dark"
+
+[extra]
+author = "Divijesh Varma"
+github = "DivijeshVarma"
+twitter = "barlog_m"
