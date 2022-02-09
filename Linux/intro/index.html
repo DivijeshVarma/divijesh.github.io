@@ -70,6 +70,9 @@
   
     
     
+      
+      
+    
   
 
   
@@ -175,6 +178,15 @@
                    
     
     
+                                <li >
+                                    <a href="https://divijesh.com/Vegan/products/">Products</a>
+                                </li>
+
+
+
+                   
+    
+    
     </ul>         
     
     </div>    
@@ -208,6 +220,34 @@ to make a complete operating system from a kernel (an engine is not sufficient t
 Many of these - such as the compiler, the C libraries, and the shell - are part of the GNU project. 
 The GNU project included a huge effort to create a non-proprietary operating system, 
 writing open-source equivalents of software and open-source implementations of standards</p>
+<hr />
+<h3 id="linux-booting-process">Linux Booting Process</h3>
+<ol>
+<li>
+<p>POST is part of BIOS and beginning stages of BIOS operation after power on computer, BIOS having POST inside it. As soon as machine is powered on, System firmware runs POST, it checks everything working correctly Input/Output devices, RAM, hard drives, PC Hardware.if found working correctly, then it will go to next step.</p>
+</li>
+<li>
+<p>The system firmware searches for a bootable device, either configured in the UEFI boot firmware or by searching for a Master Boot Record (MBR) on all disks, BIOS (basic input output system) checks for bootable device, it could be Hard disk, cd drive, USB. BIOS then checks for MBR(master boot record) in hard disk it is always first sector of bootable disk with size 512 bytes(446- primary boot loader, 64- partition table, 2- magic number).</p>
+</li>
+<li>
+<p>Primary boot loader contains address of main boot loader (MBR is very small) Main boot loader is GRUB2 which resides inside a file system /boot at that time your system doesn't have access to file system, so who helps system to go inside the file system i.e MBR. Bootloader in MBR points to GRUB2.</p>
+</li>
+<li>
+<p>GRUB2 (grand unified bootloader) version 2 loads config file /boot/grub2/grub.cfg and displays menu where you can select which kernel to boot. It loads vmlinuz kernel image(/boot/vmlinuz4.1) file into memory and extract content of Initramfs image (initramfs4.1) into a temporary, memory-based file system (tmpfs). Initramfs is an archive contains all kernel modules and drivers.The initial RAM disk (initrd) is an initial root file system that is mounted before the real root file system.</p>
+</li>
+<li>
+<p>kernel initialize hardware, try to mount root file system but kernel requires modules and drivers for initialize the hardware, it takes all those things from Initramfs. KERNEL executes /sbin/init from initramfs as first process having process (PID1) on RHEL8, init has been replaced with Systemd &amp; /sbin/init file is soft link to systemd. (ls -l /sbin/init)</p>
+</li>
+<li>
+<p>Systemd executes Initrd.target with the help of initramfs, it executes all units for Initrd.target that includes mounting root file system on disk at /sysroot directory. on RHEL8 runlevels are called as targets, Total 7 targets will be present.</p>
+</li>
+<li>
+<p>It switches root file system permanently from /sysroot to / directory, Kernel root filesystem switched from initramfs root (/sysroot) to system root filesystem(/)</p>
+</li>
+<li>
+<p>Systemd looks for default target and this file /etc/systemd/system/default.target to boot up the machine it links to graphical.target system target file defines the services that system starts.</p>
+</li>
+</ol>
 
     
   </div>
