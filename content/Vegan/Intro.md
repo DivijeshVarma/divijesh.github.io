@@ -1,0 +1,16 @@
++++
+title = "Intro"
+weight = 5
++++
+
+## Veganism
+
+Veganism is a philosophy and way of living which seeks to exclude—as far as is possible and practicable—all forms of exploitation 
+of, and cruelty to, animals for food, clothing or any other purpose; and by extension, promotes the development and 
+use of animal-free alternatives for the benefit of animals, humans and the environment. 
+In dietary terms it denotes the practice of dispensing with all products derived wholly or partly from animals.
+
+### It's not just about diet
+
+Vegans avoid exploiting animals for any purpose, with compassion being a key reason many choose a vegan lifestyle. 
+From accessories and clothing to makeup and bathroom items, animal products and products tested on animals are found in more places than you might expect.
