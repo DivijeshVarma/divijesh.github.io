@@ -83,6 +83,9 @@
     
     
   
+    
+    
+  
 
   
       <ul id="toc">
@@ -105,7 +108,11 @@
           
         </li>
     
-          <li><a href="https://divijesh.com/Linux/intro2/#blank">Blank</a>
+          <li><a href="https://divijesh.com/Linux/intro2/#update-kernel-using-yum">Update kernel using yum</a>
+          
+        </li>
+    
+          <li><a href="https://divijesh.com/Linux/intro2/#upgrade-from-rhel-7-to-rhel-8">Upgrade from RHEL 7 to RHEL 8</a>
           
         </li>
     
@@ -397,8 +404,111 @@ initramfs-5.15.19_1.img, vmlinuz-5.15.19_1.</p>
 <p>/var — Variable Data Files, This is where variable data is kept, usually system logs but can also include other types of data as well.</p>
 </li>
 </ul>
-<h2 id="blank">Blank</h2>
-<p>In the </p>
+<h2 id="update-kernel-using-yum">Update kernel using yum</h2>
+<p>With yum you can either use &quot;yum install&quot; or &quot;yum update&quot; to update kernel, either way yum will understand that you are trying to update kernel hence it will perform &quot;install&quot; action. 
+Hence the older kernel will not be removed while the newer one will still be installed.</p>
+<p>To check the list of kernel available in your repository:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">yum</span><span> list kernel
+</span></code></pre>
+<p>Note: If you are not subscribed to RHN then you can manually download the kernel rpm along with it's dependencies and then perform yum install by giving the absolute path of the rpm.</p>
+<p>Install the new kernel. update kernel and all other relative packages.</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">yum</span><span> install kernel kernel-tools kernel-tools-libs
+</span></code></pre>
+<p>Task of update kernel was successful. We can verify</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">rpm -qa </span><span>| </span><span style="color:#bf616a;">grep</span><span> kernel
+</span></code></pre>
+<p>Currently my system is still running with older kernel version</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#a7adba;"># uname  -r
+</span><span style="color:#bf616a;">3.10.0-957.el7.x86_64
+</span></code></pre>
+<p>If you have installed multiple version of kernel then you can also switch between different kernel version.</p>
+<p>Let us change it to new kernel version.</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">grub2-set-default</span><span> 0
+</span></code></pre>
+<p>Validate the changes.</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#a7adba;"># grep saved /boot/grub2/grubenv
+</span><span style="color:#bf616a;">saved_entry</span><span>=</span><span style="color:#a3be8c;">0
+</span></code></pre>
+<p>Next rebuild your GRUB2 configuration</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">grub2-mkconfig -o</span><span> /boot/grub2/grub.cfg
+</span></code></pre>
+<p>Now after rebooting the node, we see the new kernel has successfully loaded.</p>
+<p>Let us change it to old or previous kernel version.</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">grub2-set-default</span><span> 1
+</span></code></pre>
+<p>Validate the changes.</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#a7adba;"># grep saved /boot/grub2/grubenv
+</span><span style="color:#bf616a;">saved_entry</span><span>=</span><span style="color:#a3be8c;">1
+</span></code></pre>
+<p>Next rebuild your GRUB2 configuration</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">grub2-mkconfig -o</span><span> /boot/grub2/grub.cfg
+</span></code></pre>
+<p>Now after rebooting the node, we see the old kernel has successfully loaded.</p>
+<p>Note: since we know our system has installed successfully with newer kernel, so now we can safely remove the old kernel (if required or you can plan to keep it)</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">rpm -e</span><span> kernel-3.10.0-957.el7.x86_64
+</span></code></pre>
+<h2 id="upgrade-from-rhel-7-to-rhel-8">Upgrade from RHEL 7 to RHEL 8</h2>
+<ul>
+<li>
+<p>You must start the upgrade from RHEL 7.6. If you have an older version of RHEL 7 installed, then you must upgrade it to RHEL 7.6 first. Then, you can upgrade to RHEL 8.</p>
+</li>
+<li>
+<p>You can only upgrade RHEL 7 server version. You must be using RHEL 7 64-bit version.</p>
+</li>
+<li>
+<p>You must have at least 100 MB of free space available for /boot if you have /boot directory as a separate partition.</p>
+</li>
+</ul>
+<p>First, make sure that the Red Hat Enterprise Linux Server subscription is attached with the following command:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> subscription-manager attach</span><span style="color:#bf616a;"> --auto
+</span></code></pre>
+<p>You can list the subscription you have with the following command:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> subscription-manager list</span><span style="color:#bf616a;"> --installed
+</span></code></pre>
+<p>If you’re using RHEL version older than RHEL 7.6, you need to update your RHEL system to RHEL 7.6 version.</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> yum update
+</span></code></pre>
+<p>Set the release to RHEL 7.6 with the following command:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> subscription-manager release</span><span style="color:#bf616a;"> --set</span><span> 7.6
+</span></code></pre>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">cat</span><span> /etc/redhat-release
+</span></code></pre>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> yum update
+</span></code></pre>
+<p>Reboot your server with the following command:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> reboot
+</span></code></pre>
+<p>Installing and Configuring leapp:</p>
+<p>leapp is used to upgrade RHEL 7.6 to RHEL 8.
+First, enable the RHEL 7 Extras repository with the following command:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> subscription-manager repos</span><span style="color:#bf616a;"> --enable</span><span> rhel-7-server-extras-rpms
+</span></code></pre>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> yum install leapp
+</span></code></pre>
+<p>Download the leapp data archive file with the following command:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">wget</span><span> https://access.redhat.com/sites/default/files/attachments/leapp-data3.tar.gz
+</span></code></pre>
+<p>Extract the leapp data archive to the /etc/leapp/files directory</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> tar</span><span style="color:#bf616a;"> -xf</span><span> leapp-data3.tar.gz</span><span style="color:#bf616a;"> -C</span><span> /etc/leapp/files
+</span></code></pre>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">rm</span><span> leapp-data3.tar.gz
+</span></code></pre>
+<p>To upgrade to RHEL 8, run the following command:</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> leapp upgrade
+</span></code></pre>
+<p>To finish the upgrade process, reboot your server</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> reboot
+</span></code></pre>
+<p>Change the SELinux mode to enforcing.</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span> setenforce 1
+</span></code></pre>
+<p>Enable the firewall.</p>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">systemctl</span><span> start firewalld
+</span><span style="color:#bf616a;">systemctl</span><span> enable firewalld
+</span></code></pre>
+<pre data-lang="bash" style="background-color:#eff1f5;color:#4f5b66;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#a7adba;"># cat /etc/redhat-release
+</span><span style="color:#bf616a;">Red</span><span> Hat Enterprise Linux release 8.0 (Ootpa)
+</span></code></pre>
 
     
   </div>
